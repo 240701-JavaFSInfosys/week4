@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- The applicationContext.xml holds the configurations for how we register, create, and inject Spring Beans -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- We need the <beans> tag and its configurations in order for this xml to be used for Spring -->
+
+    <!-- The <bean> tag is used to register and wire Spring Beans -->
+
+    <!--The name attribute can be whatever you want, it's used for reference in dependent beans-->
+    <!--The class attribute is the path to the Class we're registering as a Bean-->
+
+    <!--Owner Bean-->
+    <bean name="owner" class="com.revature.models.Owner">
+        <property name="name" value="No Registered Owner"/> <!--Default value for name-->
+    </bean>
+
+    <!--Pet Bean-->
+    <bean name="pet" class="com.revature.models.Pet">
+        <!--The Pet Class has an Owner as one of its fields. Owner is a dependency of Pet-->
+        <!--We need to WIRE the Owner Bean to the Pet Bean-->
+        <property name="owner" ref="owner"></property>
+        <!--name is the name of the property, ref is the name of the bean we're referencing-->
+    </bean>
+
+</beans>
