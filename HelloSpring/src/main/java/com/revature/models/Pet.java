@@ -1,9 +1,11 @@
 package com.revature.models;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component //Makes a Class a bean
+@Scope("prototype") //this changes bean scope from default "singleton" to "prototype"
 public class Pet {
 
     private String name;

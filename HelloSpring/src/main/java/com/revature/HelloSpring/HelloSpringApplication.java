@@ -55,6 +55,10 @@ public class HelloSpringApplication {
 		//Beans by default are SINGLETONS (they're singleton scoped)
 		//This means there can only be one instance at a time, unless we change it.
 
+		//From here, we set Pet to be prototype scoped, but we left Owner as default singleton
+		//Every time we ask for a Pet, we'll get a new instance, with the same Owner instance
+
+
 
 	}
 
