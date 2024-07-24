@@ -1,9 +1,13 @@
 package com.revature.models;
 
 import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Entity //This makes a Class a DB table in your Database. (Makes a DB ENTITY)
 @Table(name = "users") //This lets us set attributes like the name of the table
+@Component //make this class a Bean
 public class User {
 
     @Id //This makes the field the Primary Key
@@ -20,6 +24,18 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    /*One to Many relationship (goes hand in hand wiht the Many to One in the Car Class)
+
+    mappedBy: This refers to the field in the Car class that maps to this field
+        -We are indicating what the foreign key is in the Car class. (It's the field called user)
+
+    fetch: talked about this in the Car class. Eager loads the reference on app start
+
+    cascade: This is how we specify what operations cascade down to dependent records
+        -CascadeType.ALL: ALL operations cascade down to dependent records (updates/deletes etc.) */
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Car> cars;
 
     //boilerplate code------------------- no args, all args, getter/setter, toString
 
