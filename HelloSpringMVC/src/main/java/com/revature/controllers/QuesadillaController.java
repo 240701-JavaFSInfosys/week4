@@ -49,4 +49,14 @@ public class QuesadillaController {
 
     }
 
+    //This method will let us send Quesadillas to someone else
+    @PostMapping("/send")
+    public ResponseEntity<String> sendQuesadillasToSomeone(@RequestBody int amount){
+        return ResponseEntity.accepted().body("Thanks for the " + amount + " quesadillas!");
+    }
+
+    /*Before adding /send to the URL endpoint mapping, we got an "Ambiguous Mapping" error
+    SpringMVC won't let us have two identical mappings, since it won't know where to send requests
+    The solution is to make your endpoints mappings more RESTful and give them unique paths*/
+
 }
