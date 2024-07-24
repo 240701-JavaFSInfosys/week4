@@ -23,7 +23,6 @@ public class User {
 
     //boilerplate code------------------- no args, all args, getter/setter, toString
 
-
     public User() {
     }
 
