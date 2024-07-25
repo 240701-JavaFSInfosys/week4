@@ -36,13 +36,20 @@ public class UserController {
 
     //A method that returns all Users in the DB
     @GetMapping //HTTP GET Requests ending in /users will hit this method
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<User>> getAllUsers() {
 
         //not much error handling needed, no variables, nothing crazy that can go wrong
         List<User> users = us.getAllUsers();
 
         return ResponseEntity.ok(users); //send back 200 (OK) and the Users
 
+    }
+
+    //A method that returns a User by their username
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username){
+        //One liner for now, might be able to polish this with error handling
+        return ResponseEntity.ok(us.getUserByUsername(username));
     }
 
 }

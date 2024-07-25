@@ -39,4 +39,13 @@ public class UserService {
         return userDAO.findAll();
     }
 
+    //This method gets a user by their username
+    public User getUserByUsername(String username){
+
+        //TODO: error handling for user not found, username blank, etc.
+
+        return userDAO.findByUsername(username);
+
+    }
+
 }

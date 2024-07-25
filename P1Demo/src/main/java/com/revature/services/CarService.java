@@ -5,6 +5,8 @@ import com.revature.models.Car;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CarService {
 
@@ -25,6 +27,11 @@ public class CarService {
 
         return c;
 
+    }
+
+    //This method will return all the Cars in the DB from the DAO
+    public List<Car> getAllCars(){
+        return cDAO.findAll();
     }
 
 }
