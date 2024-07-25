@@ -66,6 +66,19 @@ public class CarController {
         return ResponseEntity.ok(cs.getAllCars());
     }
 
+    //This method will delete a Car by its ID
+    @DeleteMapping("/{carId}")
+    public ResponseEntity<Object> deleteCarById(@PathVariable int carId){
+
+        //TODO: probably wrapped in a try/catch assuming the service throws exceptions
+
+        //delete the car thru the service
+        cs.deleteCarById(carId);
+
+        //return 200 and confirmation message
+        return ResponseEntity.ok("Car with ID: " + carId + " was deleted");
+
+    }
 
 
 }

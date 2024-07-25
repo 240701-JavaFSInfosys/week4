@@ -34,4 +34,20 @@ public class CarService {
         return cDAO.findAll();
     }
 
+    //This method will take in a Car ID and delete it through the DAO
+    public void deleteCarById(int id){
+
+        //First we need to get the Car by its id, for error handling AND for deletion
+        //The car WILL NOT fully delete unless it's also deleted from the User's List<Car>
+
+        //we're just gonna use .get() straight up this time (instead of Optional.isPresent())
+        Car car = cDAO.findById(id).get();
+
+        //delete the Car from the User's List<Car>
+        car.getUser().getCars().remove(car);
+
+        //now, perform the actual delete
+        cDAO.deleteById(id);
+    }
+
 }
