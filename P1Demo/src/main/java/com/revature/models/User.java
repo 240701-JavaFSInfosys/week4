@@ -30,7 +30,7 @@ public class User {
     @Column(columnDefinition = "text default 'user'")
     private String role;
 
-    /*One to Many relationship (goes hand in hand wiht the Many to One in the Car Class)
+    /*One to Many relationship (goes hand in hand with the Many to One in the Car Class)
 
     mappedBy: This refers to the field in the Car class that maps to this field
         -We are indicating what the foreign key is in the Car class. (It's the field called user)
@@ -39,7 +39,7 @@ public class User {
 
     cascade: This is how we specify what operations cascade down to dependent records
         -CascadeType.ALL: ALL operations cascade down to dependent records (updates/deletes etc.) */
-    @JsonIgnore //prevents the circular refence in our JSON responses
+    @JsonIgnore //prevents the circular reference in our JSON responses
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Car> cars;
 

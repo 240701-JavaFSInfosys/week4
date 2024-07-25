@@ -1,31 +1,56 @@
 package com.revature.services;
 
 import com.revature.DAOs.CarDAO;
+import com.revature.DAOs.UserDAO;
 import com.revature.models.Car;
+import com.revature.models.DTOs.IncomingCarDTO;
+import com.revature.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CarService {
 
-    //autowire a CarDAO
+    //autowire a CarDAO and UserDAO
     private CarDAO cDAO;
+    private UserDAO uDAO;
 
     @Autowired
-    public CarService(CarDAO cDAO) {
+    public CarService(CarDAO cDAO, UserDAO uDAO) {
         this.cDAO = cDAO;
+        this.uDAO = uDAO;
     }
 
     //This method will take Car data from the Controller and send it to the DAO
-    public Car addCar(Car newCar){
+    public Car addCar(IncomingCarDTO newCar){
 
         //TODO: error handling
 
-        Car c = cDAO.save(newCar);
+        //We do need to build a Car object to send to the service... so we'll do that conversion
+        //0 for id since it gets generated, null for User and we'll add it next
+        Car car = new Car(0, newCar.getMake(), newCar.getModel(), newCar.isFourWheelDrive(), null);
 
-        return c;
+        //use the DTO's userId field to get a User by its ID.
+        Optional<User> u = uDAO.findById(newCar.getUserId());
+
+        //Extract the optional if it exists
+        if(u.isPresent()){
+            car.setUser(u.get()); //assign the User to the Car
+            Car c = cDAO.save(car); //save our Car to the DB
+            return c;
+        } else {
+            return null;
+        }
+
+        /*Optional?? What's going on here?
+
+         findById returns an Optional<Datatype>. What's the point?
+         Optionals are often used to prevent NullPointerExceptions. The data may or may not exist
+         In other words, the presence of our data is OPTIONAL.
+         We can check if the value is present with .isPresent() method, and extract it with .get() */
 
     }
 
