@@ -22,7 +22,6 @@ public interface UserDAO extends JpaRepository<User, Integer> {
         How does Spring Data know? It's based on the name of the field in your Class
         another example: findByUsernameAndPassword, findByUsernameAndPasswordAndEmail
 
-        This is referred to as a PROPERTY EXPRESSION. Look into them, there are a LOT of options
-     */
+        This is referred to as a PROPERTY EXPRESSION. Look into them, there are a LOT of options */
 
 }

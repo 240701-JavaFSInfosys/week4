@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service //1 of the 4 stereotype annotations. Makes this Class a Bean
 public class UserService {
@@ -45,6 +46,36 @@ public class UserService {
         //TODO: error handling for user not found, username blank, etc.
 
         return userDAO.findByUsername(username);
+
+    }
+
+    //This method lets us update a user's username
+    public User updateUser(String newUsername, int userId){
+
+        //TODO: error handling, check for valid inputs
+
+        //get the User by id (remember this returns an OPTIONAL!)
+        Optional<User> existingUser = userDAO.findById(userId);
+
+        //Remember, .isPresent() checks the optional to see if there's data or if it's null
+        if(existingUser.isPresent()) {
+
+            //If the User is present, extract it so we can update it
+            User u = existingUser.get();
+
+            //update the existing username with the new username
+            u.setUsername(newUsername);
+
+            //save it back to the DB thru the DAO, send back the updated User
+            return userDAO.save(u);
+
+            //NOTE: the .save() method is used for inserts AND updates
+            //How does Spring know to insert vs update? It's based on whether the ID exists or not
+
+        } else {
+            //TODO: probably throw an exception
+            return null;
+        }
 
     }
 

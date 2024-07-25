@@ -52,4 +52,21 @@ public class UserController {
         return ResponseEntity.ok(us.getUserByUsername(username));
     }
 
+    //A Method that updates a User's username
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Object> updateUsername(@RequestBody String username, @PathVariable int userId){
+
+        //using our rudimentary error handling thanks to Optional in the Service
+
+        //if the Service returns null, we know the user wasn't found by ID
+        User updatedUser = us.updateUser(username, userId);
+
+        if(updatedUser == null){
+            return ResponseEntity.status(400).body("User not found with ID: " + userId);
+        } else {
+            return ResponseEntity.ok(updatedUser);
+        }
+
+    }
+
 }
