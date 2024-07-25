@@ -50,4 +50,13 @@ public class CarService {
         cDAO.deleteById(id);
     }
 
+    //This method will take in an int and find Cars with that user ID from the DAO
+    public List<Car> getCarsByUserId(int userId){
+
+        //TODO: error handling, check for valid id, maybe check for empty return
+
+        return cDAO.findByUserUserId(userId);
+
+    }
+
 }

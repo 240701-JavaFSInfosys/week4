@@ -1,5 +1,6 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    //We want every new User's role to default to "user" instead "admin"
+    @Column(columnDefinition = "text default 'user'")
+    private String role;
+
     /*One to Many relationship (goes hand in hand wiht the Many to One in the Car Class)
 
     mappedBy: This refers to the field in the Car class that maps to this field
@@ -34,6 +39,7 @@ public class User {
 
     cascade: This is how we specify what operations cascade down to dependent records
         -CascadeType.ALL: ALL operations cascade down to dependent records (updates/deletes etc.) */
+    @JsonIgnore //prevents the circular refence in our JSON responses
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Car> cars;
 
@@ -42,10 +48,11 @@ public class User {
     public User() {
     }
 
-    public User(int userId, String username, String password) {
+    public User(int userId, String username, String password, String role) {
         this.userId = userId;
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public int getUserId() {
@@ -78,6 +85,14 @@ public class User {
 
     public void setCars(List<Car> cars) {
         this.cars = cars;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override

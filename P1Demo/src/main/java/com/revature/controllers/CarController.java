@@ -80,5 +80,12 @@ public class CarController {
 
     }
 
+    //This method will return all Cars associates with a User ID
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Car>> getCarsByUserId(@PathVariable int userId){
+
+        return ResponseEntity.ok(cs.getCarsByUserId(userId));
+
+    }
 
 }

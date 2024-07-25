@@ -1,5 +1,6 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ public class Car {
 
     private String model;
 
+    //TODO: shouldn't have "is" in these boolean variable names
     private boolean isFourWheelDrive;
 
     /*Primary Key Foreign Key relationship! (Many to One relationship)
