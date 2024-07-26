@@ -12,9 +12,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -25,80 +28,81 @@ class P1DemoApplicationTests {
 	void contextLoads() {
 	}
 
-	//A RestTemplate test for insertCar in the Controller------------------------------------------
+	//NOTE: In a real test suite, it's good to structure the tests parallel to your src structure
+		//-ControllerTests or CarControllerTests + UserControllerTests
+		//-ServiceTests or CarServiceTests + UserServiceTests
+
+
+	//A RestTemplate test for insertCar in the Controller----------------/
+
 	@Test
-	public void insertCarTestRestController() {
+	public void insertCarTestRestTemplate(){
 
-		//Create a new IncomingCarDTO object
-		IncomingCarDTO newCar = new IncomingCarDTO("Toyota", "Camry", false, 1);
+		//Create a TestRestTemplate object to send HTTP Requests
+		TestRestTemplate restTemplate = new TestRestTemplate();
 
-		//Get a user by ID
+		//Create a new IncomingCarDTO to use in our test
+		IncomingCarDTO newCar = new IncomingCarDTO("Toyota", "Camry", true, 1);
 
-		//Create a RestTemplate object
-		RestTemplate restTemplate = new RestTemplate();
-
-		//Send the newCar object to the insertCar endpoint
-		//The endpoint will return a Car object
+		//send the new car to our insertCar method with RestTemplate, save the returned Car
 		Car returnedCar = restTemplate.postForObject("http://localhost:8080/cars", newCar, Car.class);
 
-		//Check if the returnedCar object is not null
+		//super basic tests on the returned Car object
 		assertNotNull(returnedCar);
+		assertTrue(returnedCar.isFourWheelDrive());
+		assertEquals("Toyota", returnedCar.getMake());
 	}
 
+	//HEY what if I DON'T want a real request that affects the real DB??
+	//That's when you might want to use MockMVC to mock the HTTP Request instead
 
-	//A mockito test for insert car in the car service----------------------
+
+	//A Mockito test for insertCar in the Service Layer------------------/
 
 	//A lot of setup first...
 
-	//First, we need mock DAOs, so we don't actually send a Car to the database
+	//Create a mock CarDAO and mock UserDAO
 	@Mock
-	CarDAO mockedCarDAO;
+	CarDAO mockCarDAO;
 	@Mock
-	UserDAO mockedUserDAO;
+	UserDAO mockUserDAO;
 
-	//Next, we have a concrete instance of the Service, so we can "spy" on it with methods like verify()
+	//Next, we have a concrete instance of the CarService so we can "spy" on it with methods like verify()
 	@Spy
-	CarService cs = new CarService(mockedCarDAO, mockedUserDAO);
+	CarService cs = new CarService(mockCarDAO, mockUserDAO);
 
 	//Regular IncomingCarDTO and Car objects to help with tests
-	IncomingCarDTO newCar = new IncomingCarDTO("Toyota", "Camry", false, 1);
-	Car car = new Car(1,"Toyota", "Camry", false, null);
+	IncomingCarDTO newCar = new IncomingCarDTO("Toyota", "Camry", true, 1);
+	Car returnedCar = new Car(1, "Toyota", "Camry", true, null);
 
+	//Before each test, we want to initialize our mocks and our spy
 	@BeforeEach
 	public void setup(){
-		//initialize fields annotated with @mock, @spy
-		MockitoAnnotations.openMocks(this);
-
-		//
-		cs = spy(new CarService(mockedCarDAO, mockedUserDAO));
+		MockitoAnnotations.openMocks(this); //open the registered mocks in "this" test class
+		cs = spy(new CarService(mockCarDAO, mockUserDAO)); //register the spy() of CarService
 	}
 
-	//Test that insert car returns the car object
+	//This is so much setup... but it is all we need for comprehensive, powerful service layer tests
+
+	//Finally, we can write our test
 	@Test
-	public void insertCarTestMockito() {
+	public void insertCarTestMockito(){
 
-		//When the CarDAO's save method is called with the car object, return the car object
-		//This is a "stub" - a mock method call that returns a predictable output
-		when(mockedCarDAO.save(any(Car.class))).thenReturn(car);
+		//set up some stubbing - placeholder values that our Mocked DAOs will return
+		//remember, we're not testing the DAO, we're testing the service. so fake DAO returns are fine
+		when(mockUserDAO.findById(1)).thenReturn(Optional.of(new User(1, "placeholderUser", "password", "user")));
+		when(mockCarDAO.save(any(Car.class))).thenReturn(returnedCar);
 
-		//Another stub - when the UserDAO's findById method is called with 1, return an Optional with a User object
-		when(mockedUserDAO.findById(1)).thenReturn(java.util.Optional.of(new User()));
+		//call the Service's insertCar method with our newCar object
+		Car c = cs.addCar(newCar);
 
-		//Call the Service's addCar method with the newCar object
-		Car returnedCar = cs.addCar(newCar);
+		//we can use the verify() method to verify that certain methods were called during runtime (thanks to @spy)
+		//these are verifications that the service method called the DAO methods we expect it to call
+		verify(mockCarDAO, times(1)).save(any(Car.class));
+		verify(mockUserDAO, times(1)).findById(1);
 
-		//verify that the DAO's save method was called
-		verify(mockedCarDAO).save(any(Car.class));
-
-		//Check that the returnedCar object is not null
-		assertNotNull(returnedCar);
+		//basic assertNotNull - make sure a car got returned. We could test the values of the Car AND its user too.
+		assertNotNull(c);
 	}
-
-	/* What's the point of writing a test if the Car, CarDTO, and User are predetermined?
-	We're testing the LOGIC of the service layer, not what it gets from the DAO.
-	The DAO is mocked, so we can focus on making sure the service layer works
-	This becomes more important/useful as our service methods get huge with lots of error handling */
-
-
 
 }

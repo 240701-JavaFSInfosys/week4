@@ -48,8 +48,6 @@ public class CarController {
         //otherwise, send a 201 (Created) and the Car data!
         return ResponseEntity.status(201).body(c); //send the car back in the response
 
-
-
     }
 
     //This method will return all cars in the HTTP Response
