@@ -5,6 +5,7 @@ import com.revature.DAOs.UserDAO;
 import com.revature.models.Car;
 import com.revature.models.DTOs.IncomingCarDTO;
 import com.revature.models.User;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,5 +84,22 @@ public class CarService {
         return cDAO.findByUserUserId(userId);
 
     }
+
+    //Example method using @Transactional - for when you need a method to run as a SQL transaction
+
+//    @Transactional
+//    public Car tradeCar(int x int y int z){
+//
+//        dao.updatecar
+//
+//        dao.updatecarsomeotherway
+//
+//        dao.sendcarsomewhereelse
+//
+//        dao.deletecar
+//
+//        dao.savenewcar //What if this fails here? Without @Transactional, you'd lose a car for nothing
+//
+//    }
 
 }
